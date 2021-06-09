@@ -8,7 +8,7 @@
 #  population  :integer
 #  gdp         :integer
 
-require_relative './sqlzoo.rb'
+require_relative './sqlzoo'
 
 def highest_gdp
   # Which countries have a GDP greater than every country in Europe? (Give the
@@ -37,12 +37,59 @@ def largest_in_continent
   # Find the largest country (by area) in each continent. Show the continent,
   # name, and area.
   execute(<<-SQL)
+    SELECT
+      continent, name, area
+    FROM
+      countries AS C1
+    WHERE
+      area = (
+        SELECT
+          MAX(area) AS largest_area
+        FROM
+          countries AS C2
+        WHERE
+          C1.continent = C2.continent
+      );
   SQL
+
+  # execute(<<-SQL)
+  # SELECT
+  #   continent, MAX(area) AS largest_area
+  # FROM
+  #   countries
+  # GROUP BY
+  #   continent
+  # SQL
+
+  # execute(<<-SQL)
+  #   SELECT
+  #     DISTINCT (countries.continent), name, area
+  #   FROM
+  #     countries
+  #   JOIN
+  #     (SELECT
+  #       continent, MAX(area) AS largest_area
+  #     FROM
+  #       countries
+  #     GROUP BY
+  #       continent
+  #     ) AS largest_pop
+  #   ON
+  #     countries.name = name
+  #   WHERE
+  #     name IS NOT NULL
+  # SQL
 end
 
 def large_neighbors
   # Some countries have populations more than three times that of any of their
   # neighbors (in the same continent). Give the countries and continents.
-  execute(<<-SQL)
-  SQL
+  # execute(<<-SQL)
+  # SELECT
+  #   name, continent
+  # FROM
+  #   countries
+  # WHERE
+  #   population
+  # SQL
 end
